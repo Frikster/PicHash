@@ -6,7 +6,8 @@
   "scripts": {
     "build": "webpack --watch --mode=development",
     "start": "node app.js",
-    "debug": "node --inspect app.js"
+    "debug": "node --inspect app.js",
+    "heroku-postbuild": "webpack -p"
   },
   "repository": {
     "type": "git",
