@@ -86,17 +86,62 @@
 /************************************************************************/
 /******/ ({
 
+/***/ "./public/lib/grid.js":
+/*!****************************!*\
+  !*** ./public/lib/grid.js ***!
+  \****************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+class Grid {
+    constructor(sentence) {
+        this.sentence = sentence;
+        this.imgURLs = []
+        this.sentence.split(' ').forEach(word => {
+            this.imgURLs.push(`https://robohash.org/${word}`);
+        });
+    }
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (Grid);
+
+
+/***/ }),
+
 /***/ "./public/lib/pichash.js":
 /*!*******************************!*\
   !*** ./public/lib/pichash.js ***!
   \*******************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _grid__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./grid */ "./public/lib/grid.js");
+
 
 document.addEventListener("DOMContentLoaded", () => {
-    const element = document.createElement('h1')
-    element.innerHTML = "Hello World"
-    document.body.appendChild(element)
+    window.handleSubmit = (e) => {
+        if (e.preventDefault) e.preventDefault();
+        const grid = new _grid__WEBPACK_IMPORTED_MODULE_0__["default"](e.target.sentence.value);
+        const gridEl = document.getElementsByClassName("grid-container")[0];
+        gridEl.innerHTML = "";
+        
+        grid.imgURLs.forEach(imgURL => {
+            const img = document.createElement('img');
+            img.src = imgURL;
+            gridEl.appendChild(img);
+        });
+    }
+
+    let form = document.getElementById("text-input");
+    if (form.addEventListener) { 
+        form.addEventListener("submit", window.handleSubmit);
+    } else {
+        form.attachEvent("submit", window.handleSubmit); // IE8 support
+    }
 })
 
 /***/ })
