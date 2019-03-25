@@ -100,10 +100,13 @@ class Grid {
         // Replace repeated spaces with single spaces
         this.sentence = sentence.replace(/\s{2,}/g, " ").trim();
         this.sets = sets;
-        this.imgURLs = {};
+        this.URLtoWord = {};
+        this.imgURLs = [];
         this.sentence.split(' ').forEach(word => {
             const setNo = sets[Math.floor(Math.random() * sets.length)];
-            this.imgURLs[word] = `https://robohash.org/${word}?set=set${setNo}`;
+            const url = `https://robohash.org/${word}?set=set${setNo}`;
+            this.URLtoWord[url] = word;
+            this.imgURLs.push(`https://robohash.org/${word}?set=set${setNo}`)
         });
     }
 }
@@ -147,26 +150,26 @@ document.addEventListener("DOMContentLoaded", () => {
         
         const colWidths = getComputedStyle(document.getElementsByClassName("grid-container")[0])['gridTemplateColumns'];
         const colWidth = colWidths.split('px ')[0];
-        for (let word in grid.imgURLs){
-            let imgURL = grid.imgURLs[word];
+        grid.imgURLs.forEach(imgURL => {
             const img = new Image();
             img.src = imgURL;
-            img.className = "loading";
             img.width = colWidth;
+            img.className = "loading";
             gridEl.appendChild(img);
             img.onerror = () => {
                 // image did not load
                 window.alert(
-                  `Could not load an image for "${word}" \n\nMake sure this word consists only of alphanumerics and the following characters: -._~:/?#[]@!$&'()*+,;=`
+                    `Could not load an image for "${imgURL}" \n\nMake sure this word consists only of alphanumerics and the following characters: -._~:/?#[]@!$&'()*+,;=`
                 );
             }
             img.onload = () => {
                 img.className = "";
             }
-            // img.onload = () => {
-            //     img.width = colWidth;
-            //     gridEl.appendChild(img);
-            // }
+        }); 
+
+        const slider = document.getElementById("ImgPerLineSlider");
+        if (grid.sentence.split(" ").length < slider.value) {
+            slider.value = grid.sentence.split(" ").length;
         }
     }
 
@@ -191,7 +194,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const reseizeImages = (e) => {
         const val = e.target.value;
         const sentenceLength = grid.sentence.split(" ").length;
-        if (val <= sentenceLength && sentenceLength > 2) {
+        if (val <= sentenceLength && sentenceLength > 3) {
           let gridStyle = "auto ".repeat(val);
           gridStyle = gridStyle.slice(0, gridStyle.length - 1);
           const grid = document.getElementsByClassName(
