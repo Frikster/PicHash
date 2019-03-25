@@ -97,12 +97,13 @@
 __webpack_require__.r(__webpack_exports__);
 class Grid {
     constructor(sentence, sets=[]) {
-        this.sentence = sentence;
+        // Replace repeated spaces with single spaces
+        this.sentence = sentence.replace(/\s{2,}/g, " ").trim();
         this.sets = sets;
-        this.imgURLs = [];
+        this.imgURLs = {};
         this.sentence.split(' ').forEach(word => {
             const setNo = sets[Math.floor(Math.random() * sets.length)];
-            this.imgURLs.push(`https://robohash.org/${word}?set=set${setNo}`);
+            this.imgURLs[word] = `https://robohash.org/${word}?set=set${setNo}`;
         });
     }
 }
@@ -125,48 +126,42 @@ __webpack_require__.r(__webpack_exports__);
 
 
 document.addEventListener("DOMContentLoaded", () => {
+    let grid;
+
     const handleSubmit = (e) => {
+        const sentence = document.getElementById("text-input").value;
         if (e.target.type !== "radio") e.preventDefault();
-        // Assigning radioVal can be condensed into one line, but it's done this way for IE8 support
-        // One-line solution: radioVal = document.querySelector('input[type="radio"]:checked').value;
+        // Assigning checkedRadioVal can be condensed into one line, but it's done this way for IE8 support
+        // One-line solution: checkedRadioVal = document.querySelector('input[type="radio"]:checked').value;
         let checkedRadioVal = 1; 
         let radioVals = [];
         const radioDiv = document.getElementById("radio-div");
-        radioDiv.forEach( el => {
+        Array.from(radioDiv.childNodes).forEach( el => {
             if (el.checked) checkedRadioVal = el.value;
-            if (el.value !== "random") radioVals.push(el.value);
+            if (el.value !== "random" && el.value) radioVals.push(el.value);
         });
-
-        // for (var i = 0; i < Array.from(radioDiv).length; i++) {
-        //   if (e.target[i].type === "radio") {
-        //       if(e.target[i].checked) radioVal = e.target[i].value;
-        //       if (e.target[i].value !== "random") radioVals.push(e.target[i].value);
-        //   }
-        // }
         checkedRadioVal === "random" ? checkedRadioVal = radioVals.slice(0) : checkedRadioVal = [checkedRadioVal]
-        let grid;
-        console.log(e)
-        if(e.target.checked) {
-            // Clicking a radio button
-            // let sets = e.target.value;
-            // if(sets === "random") {
-            //     sets = radioVals.filter(val => val !== "random");
-            // }
-            // console.log(sets)
-            grid = new _grid__WEBPACK_IMPORTED_MODULE_0__["default"](document.getElementById("text-input").value, sets);
-        } else {
-            // Clicking the submit button
-            grid = new _grid__WEBPACK_IMPORTED_MODULE_0__["default"](e.target.sentence.value, [checkedRadioVal]);
-        }
-        
+        grid = new _grid__WEBPACK_IMPORTED_MODULE_0__["default"](sentence, checkedRadioVal);
         const gridEl = document.getElementsByClassName("grid-container")[0];
         gridEl.innerHTML = "";
-
-        grid.imgURLs.forEach(imgURL => {
-            const img = document.createElement('img');
+        
+        const colWidths = getComputedStyle(document.getElementsByClassName("grid-container")[0])['gridTemplateColumns'];
+        const colWidth = colWidths.split('px ')[0];
+        for (let word in grid.imgURLs){
+            let imgURL = grid.imgURLs[word];
+            const img = new Image();
             img.src = imgURL;
-            gridEl.appendChild(img);
-        });
+            img.onerror = () => {
+                // image did not load
+                window.alert(
+                  `Could not load an image for "${word}" \n\nMake sure this word consists only of alphanumerics and the following characters: -._~:/?#[]@!$&'()*+,;=`
+                );
+            }
+            img.onload = () => {
+                img.width = colWidth;
+                gridEl.appendChild(img);
+            }
+        }
     }
 
     let form = document.getElementById("text-input-form");
@@ -175,14 +170,6 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
         form.attachEvent("submit", handleSubmit); // IE8 support
     }
-
-    // const handRadioClick = (e) => {
-    //     const wrapper = function() {
-    //         this.sentence = document.getElementById("text-input");
-    //         this.radioName = e.target.name;
-    //     }
-    //     handleSubmit(wrapper);
-    // }
 
     let radioDiv = document.getElementById("radio-div");
     Array.from(radioDiv.childNodes).forEach(child => {
@@ -195,7 +182,27 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    const reseizeImages = (e) => {
+        if (e.target.value <= grid.sentence.split(" ").length){
+            let gridStyle = "auto ".repeat(e.target.value);
+            gridStyle = gridStyle.slice(0, gridStyle.length - 1);
+            const grid = document.getElementsByClassName("grid-container")[0]
+            const colWidths = getComputedStyle(grid)["gridTemplateColumns"].split("px ");
+            const colWidth = colWidths[0];
+            const newWidth = (colWidth * colWidths.length) / e.target.value;
+            Array.from(grid.childNodes).forEach(img => {
+                img.width = newWidth;
+            });
+            grid.style.gridTemplateColumns = gridStyle;
+        }
+    }
 
+    const wordsPerLineSlider = document.getElementById("ImgPerLineSlider");
+    if (wordsPerLineSlider.addEventListener) {
+        wordsPerLineSlider.addEventListener("input", reseizeImages);
+    } else {
+        wordsPerLineSlider.attachEvent("change", reseizeImages); // IE support
+    }
 })
 
 /***/ })

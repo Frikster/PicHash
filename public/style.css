@@ -8,6 +8,10 @@ input {
     margin-left: 10px;
 }
 
+#text-input {
+  width: 20vw;
+}
+
 #text-input-form {
     display: flex;
     justify-content: center;
@@ -15,11 +19,24 @@ input {
     font-weight: bold;
 }
 
+#pics-per-line-div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    padding: 10px;
+}
+
+#ImgPerLineSlider {
+  width: 30vw;
+  margin-left: 17.5px;
+}
+
 .grid-container {
   display: grid;
-  grid-template-columns: auto auto auto;
+  grid-template-columns: auto auto auto auto;
   border-style: solid;
-  margin-top: 20px;
+  margin-top: 5px;
   margin-left: 20vw;
   margin-right: 20vw;
   padding: 20px;

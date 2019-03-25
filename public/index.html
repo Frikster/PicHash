@@ -14,7 +14,7 @@
 <body>
     <h1>PicHash</h1>
     <form id="text-input-form">
-        <input id="text-input" type="text" name="sentence" value="Add your text here">
+        <input id="text-input" type="text" name="sentence" value="Add your sentence to be encoded here">
         <input type="submit" value="Submit">
         <div id="radio-div">
             <input type="radio" id="allRobots" name="picType" value="1">
@@ -30,9 +30,11 @@
             <label for="allRandom">Random</label>
         </div>
     </form>
-
-
-
+    <div id="pics-per-line-div">
+        <label for="ImgPerLineSlider">Pictures Per Line</label>
+        <input type="range" min="2" max="16" value="4" class="slider" id="ImgPerLineSlider">
+    </div>
+    
     <div class="grid-container">
     </div>
 </body>
