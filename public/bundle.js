@@ -151,6 +151,9 @@ document.addEventListener("DOMContentLoaded", () => {
             let imgURL = grid.imgURLs[word];
             const img = new Image();
             img.src = imgURL;
+            img.className = "loading";
+            img.width = colWidth;
+            gridEl.appendChild(img);
             img.onerror = () => {
                 // image did not load
                 window.alert(
@@ -158,9 +161,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 );
             }
             img.onload = () => {
-                img.width = colWidth;
-                gridEl.appendChild(img);
+                img.className = "";
             }
+            // img.onload = () => {
+            //     img.width = colWidth;
+            //     gridEl.appendChild(img);
+            // }
         }
     }
 
@@ -183,17 +189,23 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     const reseizeImages = (e) => {
-        if (e.target.value <= grid.sentence.split(" ").length){
-            let gridStyle = "auto ".repeat(e.target.value);
-            gridStyle = gridStyle.slice(0, gridStyle.length - 1);
-            const grid = document.getElementsByClassName("grid-container")[0]
-            const colWidths = getComputedStyle(grid)["gridTemplateColumns"].split("px ");
-            const colWidth = colWidths[0];
-            const newWidth = (colWidth * colWidths.length) / e.target.value;
-            Array.from(grid.childNodes).forEach(img => {
-                img.width = newWidth;
-            });
-            grid.style.gridTemplateColumns = gridStyle;
+        const val = e.target.value;
+        const sentenceLength = grid.sentence.split(" ").length;
+        if (val <= sentenceLength && sentenceLength > 2) {
+          let gridStyle = "auto ".repeat(val);
+          gridStyle = gridStyle.slice(0, gridStyle.length - 1);
+          const grid = document.getElementsByClassName(
+            "grid-container"
+          )[0];
+          const colWidths = getComputedStyle(grid)[
+            "gridTemplateColumns"
+          ].split("px ");
+          const colWidth = colWidths[0];
+          const newWidth = (colWidth * colWidths.length) / val;
+          Array.from(grid.childNodes).forEach(img => {
+            img.width = newWidth;
+          });
+          grid.style.gridTemplateColumns = gridStyle;
         }
     }
 

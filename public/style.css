@@ -41,3 +41,7 @@ input {
   margin-right: 20vw;
   padding: 20px;
 }
+
+.loading {
+  background: transparent url('assets/loading_spinner.gif') center no-repeat;
+}
