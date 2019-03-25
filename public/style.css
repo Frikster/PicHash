@@ -8,7 +8,7 @@ input {
     margin-left: 10px;
 }
 
-#text-input {
+#text-input-form {
     display: flex;
     justify-content: center;
     align-items: center;

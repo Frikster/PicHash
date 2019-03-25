@@ -13,10 +13,25 @@
 
 <body>
     <h1>PicHash</h1>
-    <form id="text-input">
-        <input type="text" name="sentence" value="Add your text here">
+    <form id="text-input-form">
+        <input id="text-input" type="text" name="sentence" value="Add your text here">
         <input type="submit" value="Submit">
+        <div id="radio-div">
+            <input type="radio" id="allRobots" name="picType" value="1">
+            <label for="allRobots">All Robots</label>
+        
+            <input type="radio" id="allAliens" name="picType" value="2">
+            <label for="allAliens">All Aliens</label>
+        
+            <input type="radio" id="allCats" name="picType" value="4">
+            <label for="allCats">All Cats</label>
+        
+            <input type="radio" id="allRandom" name="picType" value="random">
+            <label for="allRandom">Random</label>
+        </div>
     </form>
+
+
 
     <div class="grid-container">
     </div>
